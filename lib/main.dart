@@ -248,7 +248,7 @@ class HoneycombMenu extends StatelessWidget {
         offsets[5].dy,
       ),
       _buildHexagon(
-        '日誌作成',
+        '日報作成',
         Icons.mode_edit,
         Color(0xFF7FBFFF),
         offsets[0].dx,
