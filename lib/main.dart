@@ -209,7 +209,7 @@ class HoneycombMenu extends StatelessWidget {
         offsets[3].dy,
       ),
       _buildHexagon(
-        '体力表示',
+        '体調記録',
         Icons.favorite,
         Color(0xFFBFFF7F),
         offsets[2].dx,
