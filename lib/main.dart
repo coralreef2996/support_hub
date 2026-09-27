@@ -11,15 +11,110 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      title: '案内ひろば',
+    return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: LoginScreen(
-        appName: 'Support Hub',
+      theme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFFC2185B)),
+        useMaterial3: true,
+        appBarTheme: const AppBarTheme(
+          backgroundColor: Colors.white,
+          surfaceTintColor: Colors.white,
+          foregroundColor: Color(0xFF1A1A1A),
+          elevation: 0,
+          toolbarHeight: 56.0,
+          centerTitle: true,
+          titleTextStyle: TextStyle(
+            color: Color(0xFF1A1A1A),
+            fontSize: 20.0,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        elevatedButtonTheme: ElevatedButtonThemeData(
+          style: ElevatedButton.styleFrom(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16.0),
+            ),
+            elevation: 2,
+          ),
+        ),
+      ),
+      home: const LoginScreen(
+        appName: '案内ひろば',
         originalHome: SupportHubOriginalHome(),
       ),
     );
   }
+}
+
+// ==========================================
+// 画面共通ヘッダー（設定・使い方）
+// ==========================================
+Widget buildSupportHubUserHeader(BuildContext context) {
+  return Padding(
+    padding: const EdgeInsets.only(top: 12.0, left: 16.0, right: 16.0, bottom: 12.0),
+    child: Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        OutlinedButton.icon(
+          onPressed: () {},
+          style: OutlinedButton.styleFrom(
+            backgroundColor: Colors.white,
+            foregroundColor: const Color(0xFFAB0000),
+            side: BorderSide(color: const Color(0xFFAB0000).withValues(alpha: 0.5)),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+          ),
+          icon: const Icon(Icons.settings, size: 18),
+          label: const Text('設定'),
+        ),
+        PopupMenuButton<String>(
+          color: Colors.white,
+          surfaceTintColor: Colors.white,
+          onSelected: (String value) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                backgroundColor: const Color(0xFFAB0000),
+                content: Text('$value が選択されました', style: const TextStyle(color: Colors.white)),
+                duration: const Duration(seconds: 2),
+              ),
+            );
+          },
+          itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
+            const PopupMenuItem<String>(
+              value: '使い方１',
+              child: Text('使い方１', style: TextStyle(color: Color(0xFFAB0000))),
+            ),
+            const PopupMenuItem<String>(
+              value: '使い方２',
+              child: Text('使い方２', style: TextStyle(color: Color(0xFFAB0000))),
+            ),
+            const PopupMenuItem<String>(
+              value: '使い方３',
+              child: Text('使い方３', style: TextStyle(color: Color(0xFFAB0000))),
+            ),
+          ],
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(16.0),
+              border: Border.all(color: const Color(0xFFAB0000).withValues(alpha: 0.5)),
+            ),
+            child: const Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(Icons.help_outline, size: 18, color: Color(0xFFAB0000)),
+                SizedBox(width: 6),
+                Text('使い方', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: Color(0xFFAB0000))),
+                SizedBox(width: 4),
+                Icon(Icons.arrow_drop_down, size: 18, color: Color(0xFFAB0000)),
+              ],
+            ),
+          ),
+        ),
+      ],
+    ),
+  );
 }
 
 class SupportHubOriginalHome extends StatelessWidget {
@@ -27,35 +122,64 @@ class SupportHubOriginalHome extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, result) {
+        if (!didPop) {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const LoginScreen(
+                appName: '案内ひろば',
+                originalHome: SupportHubOriginalHome(),
+              ),
+            ),
+          );
+        }
+      },
+      child: Scaffold(
       appBar: AppBar(
         title: const Text(
           '案内ひろば',
           style: TextStyle(
-            color: Color(0xFF060660),
+            color: Color(0xFF1A1A1A),
+            fontSize: 20.0,
             fontWeight: FontWeight.bold,
           ),
         ),
-        centerTitle: true,
+        toolbarHeight: 56.0,
         backgroundColor: Colors.white,
+        surfaceTintColor: Colors.white,
+        foregroundColor: const Color(0xFF1A1A1A),
         elevation: 0,
+        centerTitle: true,
       ),
       body: Container(
-        // 💡 全体をContainerでラップ
+        width: double.infinity,
+        height: double.infinity,
         decoration: const BoxDecoration(
           gradient: LinearGradient(
-            begin: Alignment.topCenter, // 上から
-            end: Alignment.bottomCenter, // 下へ
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
             colors: [
-              Color(0xFFffffff), // 白 (上)
-              Color(0xFFF4B9C0), // 赤 (下)
+              Color(0xFFffffff),
+              Color(0xFFF4B9C0),
             ],
           ),
         ),
-        child: HoneycombMenu(),
+        child: SingleChildScrollView(
+          physics: const AlwaysScrollableScrollPhysics(),
+          child: Column(
+            children: [
+              buildSupportHubUserHeader(context),
+              const HoneycombMenu(),
+            ],
+          ),
+        ),
       ),
-    );
-  }
+    ),
+  );
+}
 }
 
 class HexagonClipper extends CustomClipper<Path> {

@@ -52,9 +52,11 @@ dev_dependencies:
 
 # flutter_launcher_icons configuration
 flutter_launcher_icons:
-  android: true
+  android: "ic_launcher"
   ios: true
   image_path: "assets/support_hub.png"
+  adaptive_icon_background: "assets/support_hub.png"
+  adaptive_icon_foreground: "assets/support_hub.png"
   web:
     generate: true
     image_path: "assets/support_hub.png"
